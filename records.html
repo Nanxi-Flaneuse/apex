@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+
+{% block main_content %}
+<style>
+.dropBtn {
+    font-size: 20px;
+    text-align: center;
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 16px 32px;
+    text-decoration: none;
+    margin: 4px 2px;
+    cursor: pointer;
+
+}
+.addButton{
+    font-size: 20px;
+    text-align: center;
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 16px 32px;
+    text-decoration: none;
+    margin: 4px 2px;
+    cursor: pointer;
+}
+.addButton:hover, .addButton:focus {
+    background-color: #309623;
+}
+.dropBtn:hover, .dropBtn:focus {
+    background-color: #309623;
+}
+
+nav > ul > li {
+    position: relative;
+    display: inline-block;
+}
+
+.dropContent, .dropClickContent {
+    position: absolute;
+    z-index: 1;
+    display: none;
+    border: none;
+    background-color: #4CAF50;
+    font-weight: bold;
+    font-size: 80%;
+}
+
+.show {
+    display: block;
+}
+
+/* just so the form is distinctive */
+form {
+    border: 1px solid black;
+    background-color: #eee;
+}
+</style>
+<!---------------------------Content Starts Here------------------------------------------------------------------------->
+<div class="maindiv">
+<h1 style="text-align: center; padding-bottom: 2%; padding-top: 2%;">
+  My Tournament Results</h1>
+</div>
+<a href="{{url_for('submit_result')}}" style="display:block;margin-left:38.5%;"><button type="button" class="addButton">submit tournament results</button></a>
+<div id="myRecords" class="division-record">
+    <table border = 1>
+    <tr> <!--the <th> tags below contains the headings for the table-->
+        <!--<th class="record-th"><div class="record-heading">fencer name</div></th>-->
+        <!--<th class="record-th"><div class="record-heading">id</div></th>-->
+        <th class="record-th"><div class="record-heading">tournament name</div></th>
+        <th class="record-th"><div class="record-heading">tournament type</div></th>
+        <th class="record-th"><div class="record-heading">date</div></th>
+        <th class="record-th"><div class="record-heading">event type</div></th>
+        <th class="record-th"><div class="record-heading">place</div></th>
+        <th class="record-th"><div class="record-heading">number of competitors</div></th>
+    </tr>
+    {% for tournament in userDetails %}
+    <tr> <!--the jinja conditionals are not working, maybe should write a macro for it-->
+        <!--<td>{{tournament['first_name']}} {{tournament['middle_name']}} {{tournament['last_name']}}</td>
+        <td>{{tournament['id']}}</td>-->
+        <td>{{tournament['tournament_name']}}</td>
+        <td>{{tournament['tournament_type']}}</td>
+        <td>{{tournament['tournament_date']}}</td>
+        <td>{{tournament['event_type']}}</td>
+        <td>{{tournament['fencer_place']}}</td>
+        <td>{{tournament['num_competitors']}}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<div class="dropdown">
+          <button class="dropBtn" type="button">Edit</button>
+          <div id="myDropdown" class="dropClickContent">
+              <form action="{{url_for('choose_records')}}" method="POST">
+                  <div class="form-group row">
+                  <label for="tournamentRecord" class="col-sm-2 col-form-label">Tournament Result</label>
+                  <div class="col-sm-10">
+                    <select class="form-control" id="tournamentRecord" name="tournamentID" required>
+                      <option value="" disabled selected>choose...</option>
+                      {% for tournament in userDetails %}
+                      <option value= {{tournament['id']}}>
+                        {{tournament['first_name']}} {{tournament['last_name']}} {{tournament['tournament_name']}} {{tournament['tournament_date']}}</option>
+                      {% endfor %}
+                    </select></div>
+                </div>
+
+                    <div class="submitButton">
+                    <input class ='submitButton' type="submit" value="edit">
+                    </div>
+                    </form>
+          </div>
+        </div>
+</div>
+
+<!for rendering flashed message>
+<div class="container">
+    {% for message in get_flashed_messages() %}
+    <div class="alert alert-warning">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        {{ message }}
+    </div>
+    {% endfor %}
+
+    {% block page_content %}{% endblock %}
+</div>
+{% endblock %}
+
+
+{% block end_scripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"
+        integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous">
+        </script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
+        </script>
+<script type="text/javascript">
+    $(".dropdown").on('click',".dropBtn",function (evt) {
+    console.log("clicked on "+$(evt.target).text());
+    var sib = $(evt.target).next().one();
+    var shown = sib.hasClass('show');
+    closeAllDropDowns();
+    // open our dropdown, if not shown
+    if(!shown) {
+        sib.addClass('show');
+    }
+});
+function closeAllDropDowns() {
+    console.log("closing all dropdowns");
+    $(".dropContent,.dropClickContent").removeClass('show');
+}
+$(window).click(function (evt) {
+    var dcc = $(evt.target).closest(".dropClickContent");
+    var inDcc = (dcc.length === 1);
+    if (!evt.target.matches('.dropBtn') &&
+        !inDcc) {
+       closeAllDropDowns();
+    }
+});
+//var userData = $($("#tournamentRecord").find("option:checked")).attr("data-detail");
+//$("#tournamentName").attr('placeholder',userData['name']);
+</script>
+{% endblock %}
