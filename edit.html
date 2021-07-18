@@ -1,0 +1,160 @@
+{% extends "base.html" %}
+{% block main_content %}
+
+
+<form action="{{url_for('editForm')}}" method="POST">
+                <input style="display:none" value={{details[0]['id']}} name="tournamentID"></input>
+                <h3>Please enter your changes below</h3>
+                    <div class="form-group row">
+                      <label for="tournamentName" class="col-sm-2 col-form-label">Tournament name</label>
+                      <div class="col-sm-10">
+                         <input type="text" class="form-control" id="tournamentName" name="tournamentName" value="{{details[0]["tournament_name"]}}" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                      <label for="tournamentDate" class="col-sm-2 col-form-label">Tournament year</label>
+                      <div class="col-sm-10">
+                        <input class="form-control" type="text" id="tournamentDate" name="tournamentDate"
+                            value="{{details[0]["tournament_date"][0:4]}}" maxlength="4">
+                      </div>
+                    </div>
+
+                    <div class="form-group row">
+                      <label for="tournamentType" class="col-form-label col-sm-2 pt-0">Tournament type</label>
+                      <div class="col-sm-10">
+                      <div class="form-check">
+                        {% if details[0]["tournament_type"]== 'National' %}
+                            {% set checkedN = 'checked' %}
+                            {% set checkedR = '' %}
+                        {% else %}
+                            {% set checkedN = '' %}
+                            {% set checkedR = 'checked' %}
+                        {% endif %}
+                        <input required class="form-check-input" type="radio" name="tournamentType" id="tournamentTypeNat" value="National" {{checkedN}}>
+                        <label class="form-check-label" for="tournamentTypeNat">
+                          National
+                        </label>
+                      </div>
+                      <div class="form-check">
+                        <input required class="form-check-input" type="radio" name="tournamentType" id="tournamentTypeReg" value="Regional" {{checkedR}}>
+                        <label class="form-check-label" for="tournamentTypeReg">
+                          Regional
+                        </label>
+                      </div>
+                      </div>
+                    </div>
+
+                    <div class="form-group row">
+                      <label for="tournamentDivision" class="col-form-label col-sm-2 pt-0">Division</label>
+                      <div class="col-sm-10"><div class="form-check">
+                        {% if details[0]["event_type"][-2]== 'W' %}
+                            {% set checkedW = 'checked' %}
+                            {% set checkedM = '' %}
+                        {% else %}
+                            {% set checkedW = '' %}
+                            {% set checkedM = 'checked' %}
+                        {% endif %}
+                        <input required class="form-check-input" type="radio" name="division" id="divisionWomen" value="Women" {{checkedW}}>
+                        <label class="form-check-label" for="divisionWomen">
+                          Women
+                        </label>
+                      </div>
+                      <div class="form-check">
+                        <input required class="form-check-input" type="radio" name="division" id="divisionMen" value="Men" {{checkedM}}>
+                        <label class="form-check-label" for="divisionMen">
+                          Men
+                        </label>
+                      </div></div>
+                    </div>
+
+                    <div class="form-group row">
+                      <label for="weaponType" class="col-form-label col-sm-2 pt-0">Weapon type</label>
+                      <div class="col-sm-10"><div class="form-check">
+                        {% if details[0]["event_type"][-1]== 'F' %}
+                            {% set checkedF = 'checked' %}
+                            {% set checkedE = '' %}
+                        {% else %}
+                            {% set checkedF = '' %}
+                            {% set checkedE = 'checked' %}
+                        {% endif %}
+                        <input required class="form-check-input" type="radio" name="weaponType" id="weaponTypeFoil" value="Foil" {{checkedF}}>
+                        <label class="form-check-label" for="weaponTypeFoil">
+                          Foil
+                        </label>
+                      </div>
+                      <div class="form-check">
+                        <input required class="form-check-input" type="radio" name="weaponType" id="weaponTypeEpee" value="Epee" {{checkedE}}>
+                        <label class="form-check-label" for="weaponTypeEpee">
+                          Epee
+                        </label>
+                      </div></div>
+                    </div>
+
+                    <div class="form-group row">
+                      <label for="eventType" class="col-sm-2 col-form-label">Event</label>
+                      <div class="col-sm-10"><select class="form-control" id="eventType" name="eventType" required>
+                        {% if details[0]["event_type"][:-2] == "CDT"%}
+                            {% set event = 'Cadet'%}
+                        {% elif details[0]["event_type"][:-2] == "JNR" %}
+                            {% set event = 'Junior' %}
+                        {% elif details[0]["event_type"][:-2] == "D3" %}
+                            {% set event = 'DIVIII' %}
+                        {% elif details[0]["event_type"][:-2] == "D2" %}
+                            {% set event = 'DIVII' %}
+                        {% elif details[0]["event_type"][:-2] == "D1" %}
+                            {% set event = 'DIV1' %}
+                        {% elif details[0]["event_type"][:-2] == "D1A" %}
+                            {% set event = 'DIV1A' %}
+                        {% elif details[0]["event_type"][:-2] == "V40" %}
+                            {% set event = 'VET40' %}
+                        {% elif details[0]["event_type"][:-2] == "V50" %}
+                            {% set event = 'VET50' %}
+                        {% else %}
+                            {% set event = details[0]["event_type"][:-2] %}
+                        {% endif %}
+                        <option value="{{details[0]["event_type"][:-2]}}" selected>{{event}}</option>
+                        <option value="Y10">Y10</option>
+                        <option value="Y12">Y12</option>
+                        <option value="Y14">Y14</option>
+                        <option value="CDT">Cadet</option>
+                        <option value="JNR">Junior</option>
+                        <option value="D3">DIVIII</option>
+                        <option value="D2">DIVII</option>
+                        <option value="D1A">DIV1A</option>
+                        <option value="D1">DIV1</option>
+                        <option value="V40">VET40</option>
+                        <option value="V50">VET50</option>
+                        <option value="VETCO">VETCO</option>
+                      </select></div>
+                    </div>
+
+                    <div class="form-group row">
+                      <label for="placement" class="col-sm-2 col-form-label">Place</label>
+                      <div class="col-sm-10">
+                        <input required type="number" class="form-control" id="placement"
+                       name="placement" value="{{details[0]["fencer_place"]}}"></input>
+                      <small id="placementHelp" class="form-text text-muted">
+                        In what place did you finish? (number only)
+                      </small></div>
+                    </div>
+
+                    <div class="form-group row">
+                      <label for="numCompetitors" class="col-sm-2 col-form-label">Number of competitors</label>
+                      <div class="col-sm-10"><input required type="number" class="form-control" id="numCompetitors"
+                       name="numCompetitors" value="{{details[0]["num_competitors"]}}"></input>
+                      <small id="numCompetitorsHelp" class="form-text text-muted">
+                        How many fencers were there in the event? (number only)
+                      </small></div>
+                    </div>
+
+                    <div class="submitButton">
+                    <input class ='submitButton' type="submit" value="Submit">
+                    </div>
+                    <div class="submitButton">
+                    <a href="{{url_for('view_records')}}"><input class ='submitButton' type="button" value="Cancel"></a>
+                    </div>
+                    </form>
+{% endblock %}
+{% block end_scripts %}
+{% endblock %}
