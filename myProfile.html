@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block main_content %}
+
+<div class="maindiv">
+<div>My fencing id: {{fencer[0]['fencer_id']}}</div>
+<div>First name: {{fencer[0]['first_name']}}</div>
+<div>Middle name: {{fencer[0]['middle_name']}}</div>
+<div>Last name: {{fencer[0]['last_name']}}</div>
+<div>Email: {{accounts[0]['email']}}</div>
+<div>Division: {{accounts[0]['gender']}}</div>
+<div>Username: {{accounts[0]['username']}}</div>
+
+
+{% if fencer[0]['active']== 1 %}
+    {%set status ='active'%}
+{% else%}
+    {%set status = 'inactive'%}
+{% endif %}
+<div>Status: {{status}}</div>
+
+    <div class="submitButton">
+        <a href="{{url_for('showProfile')}}"><button class='submitButton'>Edit</button></a>
+    </div>
+</div>
+
+
+
+<!for rendering flashed message>
+<div class="container">
+    {% for message in get_flashed_messages() %}
+    <div class="alert alert-warning">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        {{ message }}
+    </div>
+    {% endfor %}
+
+    {% block page_content %}{% endblock %}
+</div>
+{% endblock %}
+
+
+{% block end_scripts %}
+<script>
+</script>
+{% endblock %}
